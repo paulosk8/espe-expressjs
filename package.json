@@ -12,8 +12,14 @@
   "author": "Paulo Galarza",
   "license": "ISC",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.10.1",
+    "@prisma/client": "^7.10.1",
     "body-parser": "^2.3.0",
     "dotenv": "^18.0.8",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "prisma": "^7.10.1"
   }
 }
