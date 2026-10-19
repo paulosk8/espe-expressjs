@@ -5,6 +5,12 @@ const path = require("path");
 const usersFilePath = path.join(__dirname, "users.json");
 
 const express = require("express");
+const { PrismaClient } = require("@prisma/client");
+const { PrismaPg } = require("@prisma/adapter-pg");
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
+
 const LoggerMiddleware = require("./middlewares/logger");
 const errorHandler = require("./middlewares/errorHandler");
 const { isValidUser } = require("./utils/validation");
@@ -147,6 +153,13 @@ app.get("/error", (req, res, next) => {
 });
 
 app.use(errorHandler);
+
+app.get("/db_users", async (req, res) => {
+  try {
+    const users = await prisma.user.findMany();
+    res.json(users);
+  } catch (error) {}
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
