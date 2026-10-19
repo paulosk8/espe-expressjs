@@ -14,6 +14,7 @@ const prisma = new PrismaClient({ adapter });
 const LoggerMiddleware = require("./middlewares/logger");
 const errorHandler = require("./middlewares/errorHandler");
 const { isValidUser } = require("./utils/validation");
+const authenticateToken = require("./middlewares/auth");
 
 const app = express();
 app.use(bodyParser.json());
@@ -159,6 +160,10 @@ app.get("/db_users", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+app.get("/protected-route", authenticateToken, (req, res) => {
+  res.send("Esta es una ruta protegida");
 });
 
 app.use(errorHandler);
