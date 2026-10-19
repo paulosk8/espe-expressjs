@@ -6,18 +6,26 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  /*   const demoUsers = [
+  await prisma.user.deleteMany();
+
+  const demoUsers = [
     {
       name: "Paulo Galarza",
       email: "paulo.galarza@example.com",
+      password: "admin123",
+      role: "ADMIN",
     },
     {
       name: "Julian Galarza",
       email: "julian.galarza@example.com",
+      password: "user123",
+      role: "USER",
     },
     {
       name: "Karol Gilces",
       email: "karol.gilces@example.com",
+      password: "user123",
+      role: "USER",
     },
   ];
   for (const user of demoUsers) {
@@ -25,8 +33,7 @@ async function main() {
       data: user,
     });
   }
-  console.log("Usuarios de demostración creaqdos con éxito"); */
-  await prisma.user.deleteMany();
+  console.log("Usuarios de demostración creados con éxito");
 }
 main()
   .catch((e) => {
