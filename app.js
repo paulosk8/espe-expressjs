@@ -152,14 +152,16 @@ app.get("/error", (req, res, next) => {
   next(new Error("Error Intencional"));
 });
 
-app.use(errorHandler);
-
-app.get("/db_users", async (req, res) => {
+app.get("/db_users", async (req, res, next) => {
   try {
     const users = await prisma.user.findMany();
     res.json(users);
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 });
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
