@@ -10,6 +10,7 @@ const { PrismaPg } = require("@prisma/adapter-pg");
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
+const bcrypt = require("bcryptjs");
 
 const LoggerMiddleware = require("./middlewares/logger");
 const errorHandler = require("./middlewares/errorHandler");
@@ -167,6 +168,20 @@ app.get("/protected-route", authenticateToken, (req, res) => {
 });
 
 app.use(errorHandler);
+
+app.post("/register", async (req, res) => {
+  const { email, password, name } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = await prisma.user.create({
+    data: {
+      email,
+      password: hashedPassword,
+      name,
+      role: "USER",
+    },
+  });
+  res.status(201).json({ message: "User registered successfully" });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
