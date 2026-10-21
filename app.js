@@ -11,6 +11,7 @@ const { PrismaPg } = require("@prisma/adapter-pg");
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const LoggerMiddleware = require("./middlewares/logger");
 const errorHandler = require("./middlewares/errorHandler");
@@ -181,6 +182,22 @@ app.post("/register", async (req, res) => {
     },
   });
   res.status(201).json({ message: "User registered successfully" });
+});
+
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user)
+    return res.status(400).json({ error: "Invalid email or password" });
+  const validPassword = await bcrypt.compare(password, user.password);
+  if (!validPassword)
+    res.status(400).json({ error: "Invalid email or password" });
+  const token = jwt.sign(
+    { id: user.id, role: user.rol },
+    process.env.JWT_SECRET,
+    { expiresIn: "4h" },
+  );
+  res.json({ token });
 });
 
 app.listen(PORT, () => {
