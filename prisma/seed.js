@@ -6,34 +6,71 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  await prisma.user.deleteMany();
+  /*   await prisma.appointment.deleteMany();
+  await prisma.timeBlock.deleteMany();
+  await prisma.user.deleteMany(); */
 
-  const demoUsers = [
-    {
+  // Crear usuarios
+  const user1 = await prisma.user.create({
+    data: {
       name: "Paulo Galarza",
       email: "paulo.galarza@example.com",
       password: "admin123",
       role: "ADMIN",
     },
-    {
+  });
+  const user2 = await prisma.user.create({
+    data: {
       name: "Julian Galarza",
       email: "julian.galarza@example.com",
       password: "user123",
       role: "USER",
     },
-    {
-      name: "Karol Gilces",
-      email: "karol.gilces@example.com",
-      password: "user123",
-      role: "USER",
+  });
+  // Crear bloques de tiempo
+  const timeBlock1 = await prisma.timeBlock.create({
+    data: {
+      startTime: new Date("2026-10-26T09:00:00Z"),
+      endTime: new Date("2026-10-26T11:00:00Z"),
     },
-  ];
-  for (const user of demoUsers) {
-    await prisma.user.create({
-      data: user,
-    });
-  }
-  console.log("Usuarios de demostración creados con éxito");
+  });
+  const timeBlock2 = await prisma.timeBlock.create({
+    data: {
+      startTime: new Date("2026-10-26T10:00:00Z"),
+      endTime: new Date("2026-10-26T11:11:00Z"),
+    },
+  });
+  // Crear citas
+  await prisma.appointment.create({
+    data: {
+      date: new Date("2026-10-26T09:00:00Z"),
+      user: {
+        connect: {
+          id: user1.id,
+        },
+      },
+      timeBlock: {
+        connect: {
+          id: timeBlock1.id,
+        },
+      },
+    },
+  });
+  await prisma.appointment.create({
+    data: {
+      date: new Date("2026-10-26T10:00:00Z"),
+      user: {
+        connect: {
+          id: user2.id,
+        },
+      },
+      timeBlock: {
+        connect: {
+          id: timeBlock2.id,
+        },
+      },
+    },
+  });
 }
 main()
   .catch((e) => {
