@@ -1,7 +1,12 @@
 const reservationService = require("../services/reservationService");
 exports.createReservation = async (req, res) => {
   try {
-    const reservation = await reservationService.createReservation(req.body);
+    const { date, timeBlockId } = req.body;
+    const reservation = await reservationService.createReservation({
+      date,
+      timeBlockId,
+      userId: req.user.id,
+    });
     res.status(201).json(reservation);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -22,9 +27,10 @@ exports.getReservation = async (req, res) => {
 
 exports.updateReservation = async (req, res) => {
   try {
+    const { date, timeBlockId } = req.body;
     const reservation = await reservationService.updateReservation(
       req.params.id,
-      req.body,
+      { date, timeBlockId },
     );
     if (!reservation) {
       return res.status(404).json({ error: "Reservation not found" });
