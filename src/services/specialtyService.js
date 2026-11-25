@@ -31,9 +31,19 @@ const updateSpecialtyService = async (id, data = {}) => {
   return specialty.save();
 };
 
+const deleteSpecialtyService = async (id) => {
+  return Speciality.findByIdAndDelete(id);
+};
+
+const deleteByAreaService = async (area) => {
+  return Speciality.deleteMany({ area });
+};
+
 module.exports = {
   createSpecialtyService,
   listSpecialtiesService,
   getSpecialtiesService,
   updateSpecialtyService,
+  deleteSpecialtyService,
+  deleteByAreaService,
 };

@@ -3,6 +3,8 @@ const {
   listSpecialtiesService,
   getSpecialtiesService,
   updateSpecialtyService,
+  deleteSpecialtyService,
+  deleteByAreaService,
 } = require("../services/specialtyService");
 
 const handleError = (res, error) => {
@@ -58,9 +60,31 @@ const updateSpecialty = async (req, res) => {
   }
 };
 
+const deleteSpecialty = async (req, res) => {
+  try {
+    const specialty = await deleteSpecialtyService(req.params.id);
+    if (!specialty)
+      return res.status(404).json({ error: "Error registro no encontrado" });
+    res.json(specialty);
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+const deleteByArea = async (req, res) => {
+  try {
+    const result = await deleteByAreaService(req.params.area);
+    res.json(result);
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
 module.exports = {
   createSpecialty,
   listSpecialty,
   getSpecialty,
   updateSpecialty,
+  deleteSpecialty,
+  deleteByArea,
 };
