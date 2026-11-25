@@ -2,6 +2,7 @@ const {
   createSpecialtyService,
   listSpecialtiesService,
   getSpecialtiesService,
+  updateSpecialtyService,
 } = require("../services/specialtyService");
 
 const handleError = (res, error) => {
@@ -46,8 +47,20 @@ const getSpecialty = async (req, res) => {
   }
 };
 
+const updateSpecialty = async (req, res) => {
+  try {
+    const specialty = await updateSpecialtyService(req.params.id, req.body);
+    if (!specialty)
+      return res.status(404).json({ error: "Error registro no encontrado" });
+    res.json(specialty.toJSON({ virtuals: true }));
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
 module.exports = {
   createSpecialty,
   listSpecialty,
   getSpecialty,
+  updateSpecialty,
 };
