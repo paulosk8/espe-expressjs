@@ -4,4 +4,15 @@ const createSpecialtyService = async (data) => {
   return await Speciality.create(data);
 };
 
-module.exports = { createSpecialtyService };
+const listSpecialtiesService = async () => {
+  return await Speciality.find();
+};
+const getSpecialtiesService = async (id) => {
+  return await Speciality.findById(id);
+};
+
+module.exports = {
+  createSpecialtyService,
+  listSpecialtiesService,
+  getSpecialtiesService,
+};

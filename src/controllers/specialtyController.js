@@ -1,4 +1,8 @@
-const { createSpecialtyService } = require("../services/specialtyService");
+const {
+  createSpecialtyService,
+  listSpecialtiesService,
+  getSpecialtiesService,
+} = require("../services/specialtyService");
 
 const handleError = (res, error) => {
   if (error.name === "ValidationError") {
@@ -22,4 +26,28 @@ const createSpecialty = async (req, res) => {
   }
 };
 
-module.exports = { createSpecialty };
+const listSpecialty = async (req, res) => {
+  try {
+    const specialty = await listSpecialtiesService(req.query);
+    res.json(specialty);
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+const getSpecialty = async (req, res) => {
+  try {
+    const specialty = await getSpecialtiesService(req.params.id);
+    if (!specialty)
+      return res.status(404).json({ error: "Error registro no encontrado" });
+    res.json(specialty.toJSON({ virtuals: true }));
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+module.exports = {
+  createSpecialty,
+  listSpecialty,
+  getSpecialty,
+};
