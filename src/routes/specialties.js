@@ -1,4 +1,6 @@
 const { Router } = require("express");
+const authenticateToken = require("../middlewares/auth");
+
 const {
   createSpecialty,
   listSpecialty,
@@ -9,11 +11,11 @@ const {
 } = require("../controllers/specialtyController");
 const router = Router();
 
-router.post("/", createSpecialty);
+router.post("/", authenticateToken, createSpecialty);
 router.get("/", listSpecialty);
 router.get("/:id", getSpecialty);
-router.patch("/:id", updateSpecialty);
-router.delete("/:id", deleteSpecialty);
-router.delete("/area/:area", deleteByArea);
+router.patch("/:id", authenticateToken, updateSpecialty);
+router.delete("/:id", authenticateToken, deleteSpecialty);
+router.delete("/area/:area", authenticateToken, deleteByArea);
 
 module.exports = router;
